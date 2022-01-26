@@ -21,13 +21,49 @@ class TicTacToe
     @game_name = "Game #{self.class.count}"
     @current_player = @player1_name
     @current_sign = @player1_sign
+    @in_progress = true
+  end
+
+  def start
+    return "Game has ended in #{current_player} victory!" unless @in_progress
+
+    puts "\nThis is how the gameboard is laid out:"
+    p GAMEBOARD_COORDINATES[0]
+    p GAMEBOARD_COORDINATES[1]
+    p GAMEBOARD_COORDINATES[2]
+    puts 'When asked where to put your sign use space names accordingly.'
+    puts "\nHave fun!"
+    play
   end
 
   def show_gameboard
-    puts 'Current game state:'
+    puts "\nCurrent game state:"
     p gameboard[0]
     p gameboard[1]
     p gameboard[2]
+  end
+
+  def what_game
+    "#{game_name} with #{player1_name} and #{player2_name}"
+  end
+
+  def self.count
+    @game_count += 1
+  end
+
+  private
+
+  def declare_winner
+    show_gameboard
+    win_message = "Congratulations to #{@current_player} for winning!"
+    @in_progress = false
+    win_message
+  end
+
+  def win?
+    return false if gameboard.select { |row| row.all?('X') }.empty?
+
+    true
   end
 
   def play
@@ -46,24 +82,12 @@ class TicTacToe
     coordinate1 = GAMEBOARD_COORDINATES.index(gameboard_row)
     coordinate2 = gameboard_row.index(space)
     gameboard[coordinate1][coordinate2] = @current_sign
-    change_player
-    "I have put #{@current_sign} at #{space}"
+    win? ? declare_winner : change_player
   end
-
-  def what_game
-    "#{game_name} with #{player1_name} and #{player2_name}"
-  end
-
-  def self.count
-    @game_count += 1
-  end
-
-  private
 
   def change_player
     @current_player = current_player == player1_name ? player2_name : player1_name
     @current_sign = current_sign == player1_sign ? player2_sign : player1_sign
-    show_gameboard
     play
   end
 end
