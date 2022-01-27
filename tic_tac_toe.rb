@@ -38,9 +38,7 @@ class TicTacToe
 
   def show_gameboard
     puts "\nCurrent game state:"
-    p gameboard[0]
-    p gameboard[1]
-    p gameboard[2]
+    puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
   end
 
   def what_game
@@ -61,7 +59,29 @@ class TicTacToe
   end
 
   def win?
-    return false if gameboard.select { |row| row.all?('X') }.empty?
+    return true if three_in_a_row? || three_in_a_column? || three_in_a_diagonal?
+
+    false
+  end
+
+  def three_in_a_row?
+    return false if gameboard.select { |row| row.all?(@current_sign.to_s) }.empty?
+
+    true
+  end
+
+  def three_in_a_column?
+    columns = gameboard.transpose
+    return false if columns.select { |column| column.all?(@current_sign.to_s) }.empty?
+
+    true
+  end
+
+  def three_in_a_diagonal?
+    top_left_bottom_right = [gameboard[0][0], gameboard[1][1], gameboard[2][2]]
+    top_right_bottom_left = [gameboard[0][2], gameboard[1][1], gameboard[2][0]]
+    diagonals = [top_left_bottom_right, top_right_bottom_left]
+    return false if diagonals.select { |diagonal| diagonal.all?(@current_sign.to_s) }.empty?
 
     true
   end
