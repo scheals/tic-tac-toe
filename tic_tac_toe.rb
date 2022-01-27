@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# I am explaining the class here to satisfy Rubocop.
+# This is a class that lets you play a console Tic-Tac-Toe game.
 class TicTacToe
   attr_reader :gameboard, :game_count, :game_name, :player1_name, :player2_name,
               :player_turn, :current_player, :current_sign, :player1_sign, :player2_sign
