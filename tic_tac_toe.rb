@@ -2,8 +2,9 @@
 
 # This is a class that lets you play a console Tic-Tac-Toe game.
 class TicTacToe
-  attr_reader :gameboard, :game_count, :game_name, :player1_name, :player2_name,
-              :player_turn, :current_player, :current_sign, :player1_sign, :player2_sign
+  attr_reader :gameboard, :game_count, :game_name, :player_turn, :current_player,
+              :current_sign, :player1_sign, :player2_sign, :player1_name, :player2_name,
+              :in_progress
 
   GAMEBOARD_COORDINATES = [
     ['top left', 'top middle', 'top right'],
@@ -12,36 +13,53 @@ class TicTacToe
   ].freeze
   @game_count = 0
 
-  def initialize(player1_name = 'Player 1', player2_name = 'Player 2')
-    @player1_name = player1_name.to_s
-    @player1_sign = 'O'
-    @player2_name = player2_name.to_s
-    @player2_sign = 'X'
+  def initialize
     @gameboard = Array.new(3) { [' ', ' ', ' '] }
     @game_name = "Game #{self.class.count}"
-    @current_player = @player1_name
-    @current_sign = @player1_sign
     @in_progress = true
   end
 
-  def start
-    return "Game has ended in #{current_player} victory!" unless @in_progress
+  def add_players(player1, player2)
+    return "#{player1_name} and #{player2_name} are already playing!" if player1_name && player2_name
 
+    @player1_name = player1.player_name
+    @player2_name = player2.player_name
+    @player1_sign = 'O'
+    @player2_sign = 'X'
+    @current_player = @player1_name
+    @current_sign = @player1_sign
+    "Added #{player1_name} as #{player1_sign} and #{player2_name} as #{player2_sign} to #{game_name}."
+  end
+
+  def start
+    return 'Players not added yet.' unless player1_name && player2_name
+
+    return "Game has ended in #{current_player} victory!" unless in_progress
+
+    introduce_rules
+    play
+  end
+
+  def show_gameboard
+    return introduce_rules unless @player1_name && @player2_name
+
+    puts "\nCurrent game state:"
+    puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
+  end
+
+  def introduce_rules
     puts "\nThis is how the gameboard is laid out:"
     p GAMEBOARD_COORDINATES[0]
     p GAMEBOARD_COORDINATES[1]
     p GAMEBOARD_COORDINATES[2]
     puts 'When asked where to put your sign use space names accordingly.'
+    puts 'You win when you have three of your signs in a straight line.'
     puts "\nHave fun!"
-    play
-  end
-
-  def show_gameboard
-    puts "\nCurrent game state:"
-    puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
   end
 
   def what_game
+    return "This is #{game_name} with no players yet." unless player1_name && player2_name
+
     "#{game_name} with #{player1_name} and #{player2_name}"
   end
 
@@ -53,7 +71,7 @@ class TicTacToe
 
   def declare_winner
     show_gameboard
-    win_message = "Congratulations to #{@current_player} for winning!"
+    win_message = "Congratulations to #{current_player} for winning!"
     @in_progress = false
     win_message
   end
@@ -88,7 +106,7 @@ class TicTacToe
 
   def play
     show_gameboard
-    puts "#{@current_player} as #{@current_sign}"
+    puts "#{current_player} as #{current_sign}"
     puts 'Where do you want to put your sign?'
     make_move(gets.chomp.to_s.downcase)
   end
@@ -101,7 +119,7 @@ class TicTacToe
     end
     coordinate1 = GAMEBOARD_COORDINATES.index(gameboard_row)
     coordinate2 = gameboard_row.index(space)
-    gameboard[coordinate1][coordinate2] = @current_sign
+    gameboard[coordinate1][coordinate2] = current_sign
     win? ? declare_winner : change_player
   end
 
@@ -109,5 +127,14 @@ class TicTacToe
     @current_player = current_player == player1_name ? player2_name : player1_name
     @current_sign = current_sign == player1_sign ? player2_sign : player1_sign
     play
+  end
+end
+
+# This is a class that creates players for games.
+class Player
+  attr_reader :player_name
+
+  def initialize(player_name = ['Player', 'Foo', 'Bar', 'TicTacToe Champion'].sample)
+    @player_name = player_name
   end
 end
