@@ -31,14 +31,14 @@ module Rules
   end
 
   def three_in_a_row?
-    return false if gameboard.select { |row| row.all?(@current_sign.to_s) }.empty?
+    return false if gameboard.select { |row| row.all?(current_sign.to_s) }.empty?
 
     true
   end
 
   def three_in_a_column?
     columns = gameboard.transpose
-    return false if columns.select { |column| column.all?(@current_sign.to_s) }.empty?
+    return false if columns.select { |column| column.all?(current_sign.to_s) }.empty?
 
     true
   end
@@ -47,7 +47,7 @@ module Rules
     top_left_bottom_right = [gameboard[0][0], gameboard[1][1], gameboard[2][2]]
     top_right_bottom_left = [gameboard[0][2], gameboard[1][1], gameboard[2][0]]
     diagonals = [top_left_bottom_right, top_right_bottom_left]
-    return false if diagonals.select { |diagonal| diagonal.all?(@current_sign.to_s) }.empty?
+    return false if diagonals.select { |diagonal| diagonal.all?(current_sign.to_s) }.empty?
 
     true
   end
@@ -65,7 +65,7 @@ class TicTacToe
   include Rules
   attr_reader :gameboard, :game_count, :game_name, :player_turn, :current_player,
               :current_sign, :player1_sign, :player2_sign, :player1_name, :player2_name,
-              :in_progress
+              :in_progress, :player1, :player2
 
   @game_count = 0
 
@@ -78,6 +78,8 @@ class TicTacToe
   def add_players(player1, player2)
     return "#{player1_name} and #{player2_name} are already playing!" if player1_name && player2_name
 
+    @player1 = player1
+    @player2 = player2
     @player1_name = player1.player_name
     @player2_name = player2.player_name
     @player1_sign = 'O'
@@ -97,7 +99,7 @@ class TicTacToe
   end
 
   def show_gameboard
-    return introduce_rules unless @player1_name && @player2_name
+    return introduce_rules unless player1_name && player2_name
 
     puts "\nCurrent game state:"
     puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
@@ -128,12 +130,14 @@ class TicTacToe
   def declare_winner
     show_gameboard
     @in_progress = false
+    current_player == player1_name ? Player.award_points(player1, player2) : Player.award_points(player2, player1)
     puts "Congratulations to #{current_player} for winning!"
   end
 
   def declare_tie
     show_gameboard
     @in_progress = false
+    Player.award_tie(player1, player2)
     puts "That's a tie!"
   end
 
@@ -165,10 +169,42 @@ end
 
 # This is a class that creates players for games.
 class Player
-  attr_reader :player_name
+  attr_reader :player_name, :win_count, :tie_count, :lose_count
 
   def initialize(player_name = ['Player', 'Foo', 'Bar', 'TicTacToe Champion'].sample)
     @player_name = player_name
+  end
+
+  def show_stats
+    puts "Won: #{win_count} Lost: #{lose_count} Tied: #{tie_count}"
+  end
+
+  def self.award_points(winner, loser)
+    winner.add_win
+    loser.add_lose
+  end
+
+  def self.award_tie(first_player, second_player)
+    first_player.add_tie
+    second_player.add_tie
+  end
+
+  def add_win
+    return @win_count = 1 if win_count.nil?
+
+    @win_count += 1
+  end
+
+  def add_tie
+    return @tie_count = 1 if tie_count.nil?
+
+    @tie_count += 1
+  end
+
+  def add_lose
+    return @lose_count = 1 if lose_count.nil?
+
+    @lose_count += 1
   end
 end
 
@@ -176,4 +212,10 @@ game_one = TicTacToe.new
 p1 = Player.new('Foo')
 p2 = Player.new('Bar')
 game_one.add_players(p1, p2)
-game_one.start
+# game_one.start
+p p1.add_tie
+p p1.tie_count
+p p1
+p p2
+puts p1
+puts p2
