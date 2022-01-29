@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Those are the Rules for TicTacToe
+# Those are the Rules for TicTacToe.
 module Rules
   GAME_SIGNS = %w[X O].freeze
 
@@ -60,7 +60,7 @@ module Rules
   end
 end
 
-# This is a class that lets you play a console Tic-Tac-Toe game.
+# This is a class that lets you play a console Tic-Tac-Toe game, requires Rules module.
 class TicTacToe
   include Rules
   attr_reader :gameboard, :game_count, :game_name, :player_turn, :current_player,
@@ -131,7 +131,7 @@ class TicTacToe
     show_gameboard
     @in_progress = false
     current_player == player1_name ? Player.award_points(player1, player2) : Player.award_points(player2, player1)
-    puts "Congratulations to #{current_player} for winning!"
+    puts "Congratulations to #{current_player} on winning!"
   end
 
   def declare_tie
@@ -171,7 +171,7 @@ end
 class Player
   attr_reader :player_name, :win_count, :tie_count, :lose_count
 
-  def initialize(player_name = ['Player', 'Foo', 'Bar', 'TicTacToe Champion'].sample)
+  def initialize(player_name = ['Player', 'Foo', 'Bar', 'TicTacToe Champion', 'Basil', 'Cross', 'Nought'].sample)
     @player_name = player_name
   end
 
@@ -207,15 +207,3 @@ class Player
     @lose_count += 1
   end
 end
-
-game_one = TicTacToe.new
-p1 = Player.new('Foo')
-p2 = Player.new('Bar')
-game_one.add_players(p1, p2)
-# game_one.start
-p p1.add_tie
-p p1.tie_count
-p p1
-p p2
-puts p1
-puts p2
