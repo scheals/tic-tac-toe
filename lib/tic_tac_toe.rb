@@ -6,15 +6,12 @@ require_relative 'rules'
 # This is a class that lets you play a console Tic-Tac-Toe game, requires Rules module.
 class TicTacToe
   include Rules
-  attr_reader :gameboard, :game_count, :game_name, :player_turn, :current_player,
+  attr_reader :gameboard, :player_turn, :current_player,
               :current_sign, :player1_sign, :player2_sign, :player1_name, :player2_name,
               :in_progress, :player1, :player2
 
-  @game_count = 0
-
   def initialize
     @gameboard = Array.new(3) { [' ', ' ', ' '] }
-    @game_name = "Game #{self.class.count}"
     @in_progress = true
   end
 
@@ -23,13 +20,13 @@ class TicTacToe
 
     @player1 = player1
     @player2 = player2
-    @player1_name = player1.player_name
-    @player2_name = player2.player_name
+    @player1_name = player1.name
+    @player2_name = player2.name
     @player1_sign = 'O'
     @player2_sign = 'X'
     @current_player = @player1_name
     @current_sign = @player1_sign
-    "Added #{player1_name} as #{player1_sign} and #{player2_name} as #{player2_sign} to #{game_name}."
+    "Added #{player1_name} as #{player1_sign} and #{player2_name} as #{player2_sign}."
   end
 
   def start
@@ -58,29 +55,17 @@ class TicTacToe
     puts "\nHave fun!"
   end
 
-  def what_game
-    return "This is #{game_name} with no players yet." unless player1_name && player2_name
-
-    "#{game_name} with #{player1_name} and #{player2_name}"
-  end
-
-  def self.count
-    @game_count += 1
-  end
-
   private
 
   def declare_winner
     show_gameboard
     @in_progress = false
-    current_player == player1_name ? Player.award_points(player1, player2) : Player.award_points(player2, player1)
     puts "Congratulations to #{current_player} on winning!"
   end
 
   def declare_tie
     show_gameboard
     @in_progress = false
-    Player.award_tie(player1, player2)
     puts "That's a tie!"
   end
 
