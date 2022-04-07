@@ -7,8 +7,7 @@ require_relative 'rules'
 class TicTacToe
   include Rules
   attr_reader :gameboard, :player_turn, :current_player,
-              :current_sign, :player1_sign, :player2_sign, :player1_name, :player2_name,
-              :in_progress, :player1, :player2
+              :current_sign, :in_progress, :first_player, :second_player
 
   def initialize
     @gameboard = Array.new(3) { [' ', ' ', ' '] }
@@ -16,30 +15,31 @@ class TicTacToe
   end
 
   def add_players(player1, player2)
-    return "#{player1_name} and #{player2_name} are already playing!" if player1_name && player2_name
+    return "#{first_player.name} and #{second_player.name} are already playing!" if first_player && second_player
 
-    @player1 = player1
-    @player2 = player2
-    @player1_name = player1.name
-    @player2_name = player2.name
-    @player1_sign = 'O'
-    @player2_sign = 'X'
-    @current_player = @player1_name
-    @current_sign = @player1_sign
-    "Added #{player1_name} as #{player1_sign} and #{player2_name} as #{player2_sign}."
+    @first_player = player1
+    @second_player = player2
+  end
+
+  def setup_game
+    first_player.sign = 'O'
+    second_player.sign = 'X'
+    @current_player = first_player.name
+    @current_sign = first_player.sign
   end
 
   def start
-    return 'Players not added yet.' unless player1_name && player2_name
+    return 'Players not added yet.' unless first_player && second_player
 
     return 'Game has ended.' unless in_progress
 
+    setup_game
     introduce_rules
     play
   end
 
   def show_gameboard
-    return introduce_rules unless player1_name && player2_name
+    return introduce_rules unless first_player.name && second_player.name
 
     puts "\nCurrent game state:"
     puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
@@ -89,8 +89,8 @@ class TicTacToe
   def change_player
     return declare_tie if tie?
 
-    @current_player = current_player == player1_name ? player2_name : player1_name
-    @current_sign = current_sign == player1_sign ? player2_sign : player1_sign
+    @current_player = current_player == first_player.name ? second_player.name : first_player.name
+    @current_sign = current_sign == first_player.sign ? second_player.sign : first_player.sign
     play
   end
 end
