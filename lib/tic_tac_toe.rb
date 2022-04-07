@@ -15,23 +15,27 @@ class TicTacToe
   end
 
   def add_players(player1, player2)
-    return "#{first_player.name} and #{second_player.name} are already playing!" if first_player && second_player
+    return puts "#{first_player.name} and #{second_player.name} are already playing!" if first_player && second_player
 
     @first_player = player1
     @second_player = player2
   end
 
   def setup_game
-    first_player.sign = 'O'
-    second_player.sign = 'X'
+    assign_signs
     @current_player = first_player.name
     @current_sign = first_player.sign
   end
 
-  def start
-    return 'Players not added yet.' unless first_player && second_player
+  def assign_signs
+    first_player.sign = 'O'
+    second_player.sign = 'X'
+  end
 
-    return 'Game has ended.' unless in_progress
+  def start
+    return puts 'Players not added yet.' unless first_player && second_player
+
+    return puts 'Game has ended.' unless in_progress
 
     setup_game
     introduce_rules
