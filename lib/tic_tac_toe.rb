@@ -1,64 +1,7 @@
 # frozen_string_literal: true
 
-# Those are the Rules for TicTacToe.
-module Rules
-  GAME_SIGNS = %w[X O].freeze
-
-  GAMEBOARD_COORDINATES = [
-    ['top left', 'top middle', 'top right'],
-    ['middle left', 'middle middle', 'middle right'],
-    ['bottom left', 'bottom middle', 'bottom right']
-  ].freeze
-
-  private
-
-  def win?
-    return true if three_in_a_row? || three_in_a_column? || three_in_a_diagonal?
-
-    false
-  end
-
-  def tie?
-    return false if gameboard.select { |row| row.all? { |element| GAME_SIGNS.include?(element) } }[2].nil?
-
-    true
-  end
-
-  def sign?(first_index, second_index)
-    return true if gameboard[first_index][second_index] != ' '
-
-    false
-  end
-
-  def three_in_a_row?
-    return false if gameboard.select { |row| row.all?(current_sign.to_s) }.empty?
-
-    true
-  end
-
-  def three_in_a_column?
-    columns = gameboard.transpose
-    return false if columns.select { |column| column.all?(current_sign.to_s) }.empty?
-
-    true
-  end
-
-  def three_in_a_diagonal?
-    top_left_bottom_right = [gameboard[0][0], gameboard[1][1], gameboard[2][2]]
-    top_right_bottom_left = [gameboard[0][2], gameboard[1][1], gameboard[2][0]]
-    diagonals = [top_left_bottom_right, top_right_bottom_left]
-    return false if diagonals.select { |diagonal| diagonal.all?(current_sign.to_s) }.empty?
-
-    true
-  end
-
-  def legal?(first_index, second_index)
-    return true unless first_index.nil? || sign?(first_index, second_index)
-
-    puts 'This is not a legal move.'
-    false
-  end
-end
+require_relative 'player'
+require_relative 'rules'
 
 # This is a class that lets you play a console Tic-Tac-Toe game, requires Rules module.
 class TicTacToe
@@ -164,46 +107,5 @@ class TicTacToe
     @current_player = current_player == player1_name ? player2_name : player1_name
     @current_sign = current_sign == player1_sign ? player2_sign : player1_sign
     play
-  end
-end
-
-# This is a class that creates players for games.
-class Player
-  attr_reader :player_name, :win_count, :tie_count, :lose_count
-
-  def initialize(player_name = ['Player', 'Foo', 'Bar', 'TicTacToe Champion', 'Basil', 'Cross', 'Nought'].sample)
-    @player_name = player_name
-  end
-
-  def show_stats
-    puts "Won: #{win_count} Lost: #{lose_count} Tied: #{tie_count}"
-  end
-
-  def self.award_points(winner, loser)
-    winner.add_win
-    loser.add_lose
-  end
-
-  def self.award_tie(first_player, second_player)
-    first_player.add_tie
-    second_player.add_tie
-  end
-
-  def add_win
-    return @win_count = 1 if win_count.nil?
-
-    @win_count += 1
-  end
-
-  def add_tie
-    return @tie_count = 1 if tie_count.nil?
-
-    @tie_count += 1
-  end
-
-  def add_lose
-    return @lose_count = 1 if lose_count.nil?
-
-    @lose_count += 1
   end
 end
