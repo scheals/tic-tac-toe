@@ -55,12 +55,6 @@ class Gameboard
     true
   end
 
-  def sign?(first_index, second_index)
-    return true if gameboard[first_index][second_index] != ' '
-
-    false
-  end
-
   def three_in_a_row?
     return false if gameboard.select { |row| row.all?('X') || row.all?('O') }.empty?
 
