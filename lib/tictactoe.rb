@@ -34,9 +34,7 @@ class TicTacToe
 
   def introduce_rules
     puts "\nThis is how the gameboard is laid out:"
-    p board.coordinates[0]
-    p board.coordinates[1]
-    p board.coordinates[2]
+    puts "#{board.gameboard[0]}\n#{board.gameboard[1]}\n#{board.gameboard[2]}"
     puts 'When asked where to put your sign use space names accordingly.'
     puts 'You win when you have three of your signs in a straight line.'
     puts "\nHave fun!"
