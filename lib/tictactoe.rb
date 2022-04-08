@@ -30,6 +30,7 @@ class TicTacToe
   def start
     introduce_rules
     while in_progress
+      puts "\nCurrent game state:"
       board.show
       play
       board.win? ? declare_winner : change_sides
@@ -38,19 +39,21 @@ class TicTacToe
 
   def introduce_rules
     puts "\nThis is how the gameboard is laid out:"
-    puts "#{board.gameboard[0]}\n#{board.gameboard[1]}\n#{board.gameboard[2]}"
+    board.show
     puts 'When asked where to put your sign use space names accordingly.'
     puts 'You win when you have three of your signs in a straight line.'
     puts "\nHave fun!"
   end
 
   def declare_winner
+    puts "\nCurrent game state:"
     board.show
     @in_progress = false
     puts "Congratulations to #{current_player} on winning!"
   end
 
   def declare_tie
+    puts "\nCurrent game state:"
     board.show
     @in_progress = false
     puts "That's a tie!"

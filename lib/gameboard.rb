@@ -16,6 +16,18 @@ class Gameboard
     ].freeze
   end
 
+  def first_row
+    gameboard[0]
+  end
+
+  def second_row
+    gameboard[1]
+  end
+
+  def third_row
+    gameboard[2]
+  end
+
   def initialize
     @gameboard = Array.new(3) { [' ', ' ', ' '] }
   end
@@ -28,8 +40,7 @@ class Gameboard
   end
 
   def show
-    puts "\nCurrent game state:"
-    puts "#{gameboard[0]}\n#{gameboard[1]}\n#{gameboard[2]}"
+    puts "#{first_row}\n#{second_row}\n#{third_row}"
   end
 
   def win?
