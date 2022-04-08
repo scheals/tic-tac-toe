@@ -55,6 +55,15 @@ class Gameboard
     false
   end
 
+  def legal?(space)
+    return true if coordinates.any? { |row| row.include?(space) } && !occupied?(space)
+
+    puts 'This is not a legal move.'
+    false
+  end
+
+  private
+
   def three_in_a_row?
     return false if gameboard.select { |row| row.all?('X') || row.all?('O') }.empty?
 
@@ -85,13 +94,6 @@ class Gameboard
       top_right_bottom_left << row[index]
     end
     [top_left_bottom_right, top_right_bottom_left]
-  end
-
-  def legal?(space)
-    return true if coordinates.any? { |row| row.include?(space) } && !occupied?(space)
-
-    puts 'This is not a legal move.'
-    false
   end
 
   def occupied?(space)
