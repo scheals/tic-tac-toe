@@ -179,6 +179,21 @@ describe TicTacToe do
       expect(game_tie.in_progress).to be(false)
     end
   end
+  describe '#declare_winner' do
+    subject(:game_winner) { described_class.new }
+    before do
+      allow(game_winner).to receive(:puts).twice
+      allow(game_winner.board).to receive(:puts).once
+    end
+    it 'sends board a show message' do
+      expect(game_winner.board).to receive(:show)
+      game_winner.declare_winner
+    end
+    it 'changes in_progress to false' do
+      game_winner.declare_winner
+      expect(game_winner.in_progress).to be(false)
+    end
+  end
 end
 describe Player do
   describe '#sign=' do
