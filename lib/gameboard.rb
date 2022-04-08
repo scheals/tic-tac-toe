@@ -53,14 +53,14 @@ class Gameboard
   end
 
   def three_in_a_row?
-    return false if gameboard.select { |row| row.all?('X') || row.all?('Y') }.empty?
+    return false if gameboard.select { |row| row.all?('X') || row.all?('O') }.empty?
 
     true
   end
 
   def three_in_a_column?
     columns = gameboard.transpose
-    return false if columns.select { |column| column.all?('X') || column.all?('Y') }.empty?
+    return false if columns.select { |column| column.all?('X') || column.all?('O') }.empty?
 
     true
   end
@@ -69,7 +69,7 @@ class Gameboard
     top_left_bottom_right = [gameboard[0][0], gameboard[1][1], gameboard[2][2]]
     top_right_bottom_left = [gameboard[0][2], gameboard[1][1], gameboard[2][0]]
     diagonals = [top_left_bottom_right, top_right_bottom_left]
-    return false if diagonals.select { |diagonal| diagonal.all?('X') || diagonal.all?('Y') }.empty?
+    return false if diagonals.select { |diagonal| diagonal.all?('X') || diagonal.all?('O') }.empty?
 
     true
   end
