@@ -24,8 +24,6 @@ class Gameboard
     target_row = coordinates.select { |row| row.include?(space) }.flatten
     coordinate1 = coordinates.index(target_row)
     coordinate2 = target_row.index(space)
-    return puts "That's not a legal move." unless legal?(coordinate1, coordinate2)
-
     gameboard[coordinate1][coordinate2] = sign
   end
 
@@ -74,8 +72,8 @@ class Gameboard
     true
   end
 
-  def legal?(first_index, second_index)
-    return true unless first_index.nil? || sign?(first_index, second_index)
+  def legal?(space)
+    return true if coordinates.any? { |row| row.include?(space) }
 
     puts 'This is not a legal move.'
     false

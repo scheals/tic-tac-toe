@@ -29,7 +29,11 @@ class TicTacToe
 
   def start
     introduce_rules
-    play while in_progress
+    while in_progress
+      board.show
+      play
+      board.win? ? declare_winner : change_sides
+    end
   end
 
   def introduce_rules
@@ -53,17 +57,31 @@ class TicTacToe
   end
 
   def play
-    board.show
+    move = ask_move
+    board.make_move(move, current_sign)
+  end
+
+  def ask_move
     puts "#{current_player} as #{current_sign}"
     puts 'Where do you want to put your sign?'
-    board.make_move(gets.chomp.to_s.downcase, current_sign)
-    board.win? ? declare_winner : change_player
+    move = gets.chomp.to_s.downcase
+    return move if board.legal?(move)
+
+    ask_move
+  end
+
+  def change_sides
+    return declare_tie if board.tie?
+
+    change_player
+    change_sign
   end
 
   def change_player
-    return declare_tie if board.tie?
-
     @current_player = current_player == first_player.name ? second_player.name : first_player.name
+  end
+
+  def change_sign
     @current_sign = current_sign == first_player.sign ? second_player.sign : first_player.sign
   end
 end
