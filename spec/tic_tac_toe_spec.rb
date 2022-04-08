@@ -125,4 +125,13 @@ describe Gameboard do
       end
     end
   end
+  describe '#make_move' do
+    context 'when making a move' do
+      subject(:game_move) { described_class.new }
+      it 'updates the board' do
+        game_move.make_move('top left', 'X')
+        expect(game_move.first_row[0]).to be('X')
+      end
+    end
+  end
 end
