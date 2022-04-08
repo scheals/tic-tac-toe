@@ -53,4 +53,37 @@ describe Gameboard do
       end
     end
   end
+  describe '#tie?' do
+    context 'when the game is underway' do
+      subject(:mid_tie_game) { described_class.new }
+      before do
+        mid_tie_game.make_move('bottom left', 'O')
+        mid_tie_game.make_move('bottom middle', 'X')
+        mid_tie_game.make_move('bottom right', 'O')
+      end
+      it 'returns false' do
+        expect(mid_tie_game.tie?).to be(false)
+      end
+    end
+    context 'when the game is tied' do
+      subject(:game_tie) { described_class.new }
+      before do
+        game_tie.make_move('bottom left', 'O')
+        game_tie.make_move('bottom middle', 'X')
+        game_tie.make_move('bottom right', 'O')
+        game_tie.make_move('middle left', 'O')
+        game_tie.make_move('middle middle', 'X')
+        game_tie.make_move('middle right', 'O')
+        game_tie.make_move('top left', 'X')
+        game_tie.make_move('top middle', 'O')
+        game_tie.make_move('top right', 'X')
+      end
+      it 'returns true' do
+        expect(game_tie.tie?).to be(true)
+      end
+      it 'and nobody won' do
+        expect(game_tie.win?).to be(false)
+      end
+    end
+  end
 end
