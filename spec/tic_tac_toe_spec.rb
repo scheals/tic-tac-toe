@@ -164,6 +164,21 @@ describe TicTacToe do
       expect(game_setup.current_sign).to be(game_setup.first_player.sign)
     end
   end
+  describe '#declare_tie' do
+    subject(:game_tie) { described_class.new }
+    before do
+      allow(game_tie).to receive(:puts).twice
+      allow(game_tie.board).to receive(:puts).once
+    end
+    it 'sends board a show message' do
+      expect(game_tie.board).to receive(:show)
+      game_tie.declare_tie
+    end
+    it 'changes in_progress to false' do
+      game_tie.declare_tie
+      expect(game_tie.in_progress).to be(false)
+    end
+  end
 end
 describe Player do
   describe '#sign=' do
