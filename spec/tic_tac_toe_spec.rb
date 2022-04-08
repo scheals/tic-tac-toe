@@ -86,4 +86,43 @@ describe Gameboard do
       end
     end
   end
+  describe '#legal?' do
+    context 'when it returns false' do
+      subject(:game_illegal) { described_class.new }
+      it 'outputs an error message' do
+        expect(game_illegal).to receive(:puts).with('This is not a legal move.')
+        game_illegal.legal?('Atlantis')
+      end
+    end
+    context "when space doesn't exist on the gameboard" do
+      subject(:game_out_of_bounds) { described_class.new }
+      before do
+        allow(game_out_of_bounds).to receive(:puts).once
+      end
+      it 'returns false' do
+        expect(game_out_of_bounds.legal?(1)).to be(false)
+      end
+    end
+    context 'when space is already occupied' do
+      subject(:game_occupied) { described_class.new }
+      before do
+        allow(game_occupied).to receive(:puts).once
+        game_occupied.make_move('bottom left', 'X')
+      end
+      it 'returns false' do
+        expect(game_occupied.legal?('bottom left')).to be(false)
+      end
+    end
+    context 'when space is legal' do
+      subject(:game_legal) { described_class.new }
+      before do
+        game_legal.make_move('top right', 'O')
+        game_legal.make_move('top middle', 'X')
+        game_legal.make_move('middle right', 'O')
+      end
+      it 'returns true' do
+        expect(game_legal.legal?('middle middle')).to be(true)
+      end
+    end
+  end
 end
