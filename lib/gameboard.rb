@@ -69,12 +69,22 @@ class Gameboard
   end
 
   def three_in_a_diagonal?
-    top_left_bottom_right = [gameboard[0][0], gameboard[1][1], gameboard[2][2]]
-    top_right_bottom_left = [gameboard[0][2], gameboard[1][1], gameboard[2][0]]
-    diagonals = [top_left_bottom_right, top_right_bottom_left]
+    diagonals = create_diagonals
     return false if diagonals.select { |diagonal| diagonal.all?('X') || diagonal.all?('O') }.empty?
 
     true
+  end
+
+  def create_diagonals
+    top_left_bottom_right = []
+    top_right_bottom_left = []
+    gameboard.each_with_index do |row, index|
+      top_left_bottom_right << row[index]
+    end
+    gameboard.reverse.each_with_index do |row, index|
+      top_right_bottom_left << row[index]
+    end
+    [top_left_bottom_right, top_right_bottom_left]
   end
 
   def legal?(space)
