@@ -135,3 +135,44 @@ describe Gameboard do
     end
   end
 end
+describe TicTacToe do
+  describe '#assign_signs' do
+    subject(:game_signs) { described_class.new }
+
+    it 'sends first_player sign= with O' do
+      expect(game_signs.first_player).to receive(:sign=).with('O')
+      game_signs.assign_signs
+    end
+
+    it 'sends second_player sign= with X' do
+      expect(game_signs.second_player).to receive(:sign=).with('X')
+      game_signs.assign_signs
+    end
+  end
+
+  describe '#setup_game' do
+    subject(:game_setup) { described_class.new }
+
+    before do
+      game_setup.setup_game
+    end
+    it "sets current_player to first player's name" do
+      expect(game_setup.current_player).to be(game_setup.first_player.name)
+    end
+
+    it "sets current_sign to first player's sign" do
+      expect(game_setup.current_sign).to be(game_setup.first_player.sign)
+    end
+  end
+end
+describe Player do
+  describe '#sign=' do
+    subject(:player_sign) { described_class.new }
+    context 'when sign is changed' do
+      it 'changes value to what was passed in' do
+        player_sign.sign = 'X'
+        expect(player_sign.sign).to be('X')
+      end
+    end
+  end
+end
