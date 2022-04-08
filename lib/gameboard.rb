@@ -50,9 +50,9 @@ class Gameboard
   end
 
   def tie?
-    return false if gameboard.select { |row| row.all? { |element| game_signs.include?(element) } }[2].nil?
+    return true if gameboard.select { |row| (row.count('X') + row.count('O')) == 3 }.length == 3
 
-    true
+    false
   end
 
   def three_in_a_row?
