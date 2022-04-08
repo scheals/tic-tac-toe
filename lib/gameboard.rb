@@ -88,9 +88,16 @@ class Gameboard
   end
 
   def legal?(space)
-    return true if coordinates.any? { |row| row.include?(space) }
+    return true if coordinates.any? { |row| row.include?(space) } && !occupied?(space)
 
     puts 'This is not a legal move.'
     false
+  end
+
+  def occupied?(space)
+    target_row = coordinates.select { |row| row.include?(space) }.flatten
+    coordinate1 = coordinates.index(target_row)
+    coordinate2 = target_row.index(space)
+    game_signs.include?(gameboard[coordinate1][coordinate2])
   end
 end
