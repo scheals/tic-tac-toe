@@ -135,43 +135,86 @@ describe Gameboard do
     end
   end
 end
+
 describe TicTacToe do
   describe '#assign_signs' do
-    subject(:game_signs) { described_class.new }
-
+    subject(:game_signs) { described_class.new(player1, player2) }
+    let(:player1) { instance_double(Player, name: 'Bob') }
+    let(:player2) { instance_double(Player, name: 'Shappi') }
+    before do
+      allow(player1).to receive(:sign=).twice
+      allow(player1).to receive(:sign).once
+      allow(player2).to receive(:sign=).twice
+      allow(player2).to receive(:sign).once
+    end
     it 'sends first_player sign= with O' do
-      expect(game_signs.first_player).to receive(:sign=).with('O')
+      expect(player1).to receive(:sign=).with('O')
       game_signs.assign_signs
     end
 
     it 'sends second_player sign= with X' do
-      expect(game_signs.second_player).to receive(:sign=).with('X')
+      expect(player2).to receive(:sign=).with('X')
       game_signs.assign_signs
     end
   end
 
   describe '#setup_game' do
-    subject(:game_setup) { described_class.new }
-
+    subject(:game_setup) { described_class.new(player1, player2) }
+    let(:player1) { instance_double(Player, name: 'Sam') }
+    let(:player2) { instance_double(Player, name: 'Earl') }
     before do
+      allow(player1).to receive(:sign=).twice
+      allow(player1).to receive(:sign).thrice
+      allow(player2).to receive(:sign=).twice
+      allow(player2).to receive(:sign).once
       game_setup.setup_game
     end
     it "sets current_player to first player's name" do
-      expect(game_setup.current_player).to be(game_setup.first_player.name)
+      expect(game_setup.current_player).to be(player1.name)
     end
 
     it "sets current_sign to first player's sign" do
-      expect(game_setup.current_sign).to be(game_setup.first_player.sign)
+      expect(game_setup.current_sign).to be(player1.sign)
+    end
+  end
+  describe '#play' do
+    context 'when the move is valid' do
+      subject(:in_game) { described_class.new(Player.new, Player.new, board) }
+      let(:board) { instance_double(Gameboard) }
+      before do
+        valid_move = 'top left'
+        allow(in_game).to receive(:ask_move).and_return(valid_move)
+        allow(board).to receive(:make_move).once
+      end
+      it 'sends board a make_move message' do
+        expect(board).to receive(:make_move)
+        in_game.play
+      end
+    end
+  end
+  describe '#ask_move' do
+    context 'when the move is legal' do
+      subject(:ask_legal) { described_class.new }
+      before do
+        legal_move = 'top middle'
+        allow(ask_legal).to receive(:gets).and_return(legal_move)
+        allow(ask_legal).to receive(:puts).twice
+      end
+      it 'returns the move' do
+        expect(ask_legal.ask_move).to eq('top middle')
+      end
     end
   end
   describe '#declare_tie' do
-    subject(:game_tie) { described_class.new }
+    subject(:game_tie) { described_class.new(Player.new, Player.new, board) }
+    let(:board) { instance_double(Gameboard) }
     before do
       allow(game_tie).to receive(:puts).twice
-      allow(game_tie.board).to receive(:puts).once
+      allow(board).to receive(:puts).once
+      allow(board).to receive(:show).once
     end
     it 'sends board a show message' do
-      expect(game_tie.board).to receive(:show)
+      expect(board).to receive(:show)
       game_tie.declare_tie
     end
     it 'changes in_progress to false' do
@@ -180,16 +223,18 @@ describe TicTacToe do
     end
   end
   describe '#declare_winner' do
-    subject(:game_winner) { described_class.new }
+    subject(:game_winner) { described_class.new(Player.new, Player.new, board) }
+    let(:board) { instance_double(Gameboard) }
     before do
       allow(game_winner).to receive(:puts).twice
-      allow(game_winner.board).to receive(:puts).once
+      allow(board).to receive(:puts).once
     end
     it 'sends board a show message' do
-      expect(game_winner.board).to receive(:show)
+      expect(board).to receive(:show)
       game_winner.declare_winner
     end
     it 'changes in_progress to false' do
+      allow(board).to receive(:show).once
       game_winner.declare_winner
       expect(game_winner.in_progress).to be(false)
     end
