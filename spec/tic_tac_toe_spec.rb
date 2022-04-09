@@ -239,6 +239,50 @@ describe TicTacToe do
       expect(game_winner.in_progress).to be(false)
     end
   end
+  describe '#start' do
+    context 'when game is won after five rounds' do
+      subject(:game_finish) { described_class.new(player1, player2, board) }
+      let(:board) { instance_double(Gameboard) }
+      let(:player1) { instance_double(Player, name: 'Mikhail') }
+      let(:player2) { instance_double(Player, name: 'Behemoth') }
+      before do
+        allow(player1).to receive(:sign=)
+        allow(player1).to receive(:sign)
+        allow(player2).to receive(:sign=)
+        allow(player2).to receive(:sign)
+        allow(board).to receive(:show)
+        allow(board).to receive(:win?).and_return(false, false, false, false, true)
+        allow(board).to receive(:tie?).and_return(false, false, false, false)
+        allow(game_finish).to receive(:play).exactly(5).times
+        allow(game_finish).to receive(:puts)
+      end
+      it 'stops the loop and ends the game' do
+        expect(game_finish).to receive(:puts).with("Congratulations to #{game_finish.current_player} on winning!").once
+        game_finish.start
+      end
+    end
+    context 'when game is tied' do
+      subject(:game_tie) { described_class.new(player1, player2, board) }
+      let(:board) { instance_double(Gameboard) }
+      let(:player1) { instance_double(Player, name: 'Simon') }
+      let(:player2) { instance_double(Player, name: 'Beth') }
+      before do
+        allow(player1).to receive(:sign=)
+        allow(player1).to receive(:sign)
+        allow(player2).to receive(:sign=)
+        allow(player2).to receive(:sign)
+        allow(board).to receive(:show)
+        allow(board).to receive(:win?).and_return(false)
+        allow(board).to receive(:tie?).and_return(true)
+        allow(game_tie).to receive(:play)
+        allow(game_tie).to receive(:puts)
+      end
+      it 'stops the loop and ends the game' do
+        expect(game_tie).to receive(:puts).with("That's a tie!").once
+        game_tie.start
+      end
+    end
+  end
 end
 describe Player do
   describe '#sign=' do
